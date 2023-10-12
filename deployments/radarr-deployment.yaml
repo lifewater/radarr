@@ -1,0 +1,54 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: radarr-deployment
+  namespace: homelab
+  labels:
+    app: radarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: radarr
+  template:
+    metadata:
+      labels:
+        app: radarr
+    spec:
+      containers:
+      - name: radarr-container
+        image: linuxserver/radarr
+        ports:
+          - containerPort: 7878
+        volumeMounts:
+          - mountPath: /config
+            name: radarr-config
+          - mountPath: /downloads
+            name: sabnzbd-downloads
+          - mountPath: /movies
+            name: radarr-movies
+      volumes:
+        - name: radarr-config
+          persistentVolumeClaim:
+            claimName: pvc-radarr-config
+        - name: sabnzbd-downloads
+          persistentVolumeClaim:
+            claimName: pvc-sabnzbd-downloads
+        - name: radarr-movies
+          persistentVolumeClaim:
+            claimName: pvc-radarr-movies
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: radarr-service
+  namespace: homelab
+spec:
+  type: ClusterIP
+  selector:
+    app: radarr
+  ports:
+  - protocol: TCP
+    port: 8090
+    targetPort: 8090

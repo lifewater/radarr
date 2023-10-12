@@ -1,0 +1,15 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: radarr-ingress
+  namespace: homelab
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: PathPrefix('/radarr')
+    kind: Rule
+    services:
+    - name: radarr-service
+      port: 8090
