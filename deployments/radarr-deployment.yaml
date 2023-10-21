@@ -16,6 +16,15 @@ spec:
       labels:
         app: radarr
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node
+                operator: In
+                values:
+                - kworker3
       containers:
       - name: radarr-container
         image: linuxserver/radarr
@@ -24,14 +33,16 @@ spec:
         volumeMounts:
           - mountPath: /config
             name: radarr-config
+
           - mountPath: /downloads
             name: sabnzbd-downloads
           - mountPath: /movies
             name: radarr-movies
       volumes:
         - name: radarr-config
-          persistentVolumeClaim:
-            claimName: pvc-radarr-config
+          hostPath: 
+            path: /mnt/ssd/radarr/
+
         - name: sabnzbd-downloads
           persistentVolumeClaim:
             claimName: pvc-sabnzbd-downloads
@@ -50,5 +61,5 @@ spec:
     app: radarr
   ports:
   - protocol: TCP
-    port: 8090
-    targetPort: 8090
+    port: 7878
+    targetPort: 7878
