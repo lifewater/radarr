@@ -8,8 +8,8 @@ spec:
   entryPoints:
     - web
   routes:
-  - match: PathPrefix('/radarr')
+  - match: PathPrefix(`/radarr`)
     kind: Rule
     services:
     - name: radarr-service
-      port: 8090
+      port: 7878
